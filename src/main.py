@@ -1,53 +1,69 @@
 
 # modules
-import pygame, threading, winsound
-pygame.init()
+import pygame
+import threading
+import winsound
+from game import *
+from snake import *
 
 # objects
-from game_class import Game_Class
+pygame.init()
 game = Game_Class()
 
-# mainloop
-while game.run:
 
-    # update display
-    pygame.display.update()
-    game.display.fill(game.bg)
-    game.clock.tick(game.fps)
+def main():
 
-    # events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: game.run = False
+    # mainloop
+    while game.run:
 
-        if event.type == pygame.KEYDOWN:
-            # x axis
-            if game.snake.direction in ["up", "down"]:
-                if event.key == pygame.K_a:
-                    game.snake.direction_queue = "left"
-                elif event.key == pygame.K_d:
-                    game.snake.direction_queue = "right"
-            # y axis
-            if game.snake.direction in ["left", "right"]:
-                if event.key == pygame.K_w:
-                    game.snake.direction_queue = "up"
-                elif event.key == pygame.K_s:
-                    game.snake.direction_queue = "down"
-            
-            if event.key == pygame.K_p:
-                game.paused = not game.paused
-            if event.key == pygame.K_f:
-                game.toggle_display()
-    
-    # draw
-    game.draw_map()
-    game.draw_hud()
-    game.snake.draw()
-    game.snake.draw_food()
-    if not game.paused:
-        game.snake.move()
-        game.snake.eat_food()
-        game.snake.check_collision()
+        # update display
+        pygame.display.update()
+        game.display.fill(game.bg)
+        game.clock.tick(game.fps)
 
-pygame.quit()
-quit()
+        # events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game.run = False
+
+            # key is pressed down
+            if event.type == pygame.KEYDOWN:
+                
+                # x axis
+                if game.snake.direction in [Direction.up, Direction.down]:
+                    if event.key == pygame.K_a:
+                        game.snake.direction_queue = Direction.left
+                    elif event.key == pygame.K_d:
+                        game.snake.direction_queue = Direction.right
+                
+                # y axis
+                if game.snake.direction in [Direction.left, Direction.right]:
+                    if event.key == pygame.K_w:
+                        game.snake.direction_queue = Direction.up
+                    elif event.key == pygame.K_s:
+                        game.snake.direction_queue = Direction.down
+
+                # pause
+                if event.key == pygame.K_p:
+                    game.paused = not game.paused
+                if event.key == pygame.K_f:
+                    game.toggle_display()
+
+        # draw
+        game.draw_map()
+        game.draw_hud()
+        game.snake.draw()
+        game.snake.draw_food()
+        if not game.paused:
+            game.snake.move()
+            game.snake.eat_food()
+            game.snake.check_collision()
+
+
+
+# run program
+if __name__ == "__main__":
+    main()
+    pygame.quit()
+    quit()
 
